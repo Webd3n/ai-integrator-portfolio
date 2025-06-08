@@ -1,10 +1,14 @@
-
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import openai
+import os
 
 app = Flask(__name__)
 
-openai.api_key = 'ТУК_ПОСТАВИ_СВОЯ_API_КЛЮЧ'
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/chat', methods=['POST'])
 def chat():
@@ -15,7 +19,7 @@ def chat():
         return jsonify({'error': 'No message provided'}), 400
 
     response = openai.ChatCompletion.create(
-        model="gpt-4o-mini",
+        model="gpt-4o",
         messages=[{"role": "user", "content": user_message}],
         max_tokens=150
     )
