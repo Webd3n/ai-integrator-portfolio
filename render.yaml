@@ -1,1 +1,10 @@
-
+services:
+  - type: web
+    name: ai-integrator-portfolio
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn app:app
+    envVars:
+      - key: OPENAI_API_KEY
+        value: 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
+        
