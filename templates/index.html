@@ -1,1 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Chatbot Demo</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 2rem; }
+  #chat { border: 1px solid #ccc; padding: 1rem; height: 300px; overflow-y: scroll; }
+  .message { margin: 0.5rem 0; }
+  .user { color: blue; }
+  .bot { color: green; }
+  input[type="text"] { width: 80%; padding: 0.5rem; }
+  button { padding: 0.5rem 1rem; }
+</style>
+</head>
+<body>
 
+<h1>AI Chatbot</h1>
+<div id="chat"></div>
+<input type="text" id="input" placeholder="Напиши съобщение..." />
+<button onclick="sendMessage()">Изпрати</button>
+
+<script>
+async function sendMessage() {
+  const input = document.getElementById('input');
+  const chat = document.getElementById('chat');
+  const message = input.value.trim();
+  if (!message) return;
+
+  // Покажи съобщението на потребителя
+  chat.innerHTML += `<div class="message user"><b>Ти:</b> ${message}</div>`;
+  input.value = '';
+  chat.scrollTop = chat.scrollHeight;
+
+  // Изпрати заявка към back-end
+  const response = await fetch('/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message })
+  });
+
+  const data = await response.json();
+
+  // Покажи отговора от бота
+  if (data.answer) {
+    chat.innerHTML += `<div class="message bot"><b>Бот:</b> ${data.answer}</div>`;
+  } else {
+    chat.innerHTML += `<div class="message bot"><b>Бот:</b> Имаше проблем със заявката.</div>`;
+  }
+  chat.scrollTop = chat.scrollHeight;
+}
+</script>
+
+</body>
+</html>
